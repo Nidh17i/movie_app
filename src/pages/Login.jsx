@@ -1,19 +1,30 @@
-import { useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export const Login = () => {
-  useEffect(() => {
-    const options = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY'
-  }
-};
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate=useNavigate();
+    const handleLogin=(e)=>{
+      e.preventDefault();
 
-fetch('https://api.themoviedb.org/3/discover/movie?449a6d78cb0cfe81e0791416ced1965binclude_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc', options)
-  .then(res => res.json())
-  .then(res => console.log(res))
-  .catch(err => console.error(err));}, []);
+      const localuser=JSON.parse(localStorage.getItem('cinehavenUser'))
+
+      if(!localuser){
+        alert('no user found ! please sign up first');
+        return;
+    }
+
+    if(name === localuser.name && password === localuser.password){
+      alert(`welcome back, ${localuser.name}`)
+      localStorage.setItem('isLoggedIn','true');
+      navigate('/')
+    }
+    else{
+      alert('invalid userName or password');
+    }
+  }
 
   return (
     <>
@@ -24,54 +35,53 @@ fetch('https://api.themoviedb.org/3/discover/movie?449a6d78cb0cfe81e0791416ced19
             src="https://i.pinimg.com/1200x/1c/33/05/1c3305662f8ff82f1f099213dffc678d.jpg"
             className="mx-auto h-10 w-auto"
           />
-          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white-900">
             Sign in to your account
           </h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
-            <div>
+          <form  method="POST" className="space-y-6"
+            onSubmit={handleLogin}>
+           <div>
               <label
-                htmlFor="email"
-                className="block text-sm/6 font-medium text-gray-900"
+                htmlFor="username"
+                className="block text-sm/6 font-medium text-white-900"
               >
-                Email address
+                UserName
               </label>
               <div className="mt-2">
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
+                  type="text"
+                  id="username"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  name="mobile"
                   required
-                  autoComplete="email"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  placeholder="Enter userName"
+               className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
             </div>
+            <div></div>
 
             <div>
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm/6 font-medium text-gray-900"
+                  className="block text-sm/6 font-medium text-white-900"
                 >
                   Password
                 </label>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
+                
               </div>
               <div className="mt-2">
                 <input
                   id="password"
                   name="password"
                   type="password"
+                  value={password}
+                  onChange={(e)=>setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"

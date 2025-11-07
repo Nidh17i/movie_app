@@ -4,6 +4,8 @@ import { SignUp } from "./pages/SignUp"
 import { Home } from "./pages/Home"
 import { Details } from "./pages/Details"
 import Example from "./components/Navbar"
+import './App.css'
+import { ProtectedRoute } from "./components/protectedRoute"
 
 
 function App() {
@@ -17,11 +19,17 @@ function App() {
  
    {/* <Navbar/>  */}
    <Routes>
+
+    <Route element={<ProtectedRoute/>}>
     <Route path='/' element={<Home/>}/>
-    <Route path='/login' element={<Login/>}/>
-    <Route path="/signup" element={<SignUp/>}/>
     <Route path='/details' element={< Details/>}/>
 
+
+    </Route>
+    
+    <Route path='/login' element={<Login/>}/>
+    <Route path="/signup" element={<SignUp/>}/>
+    
    </Routes>
    </BrowserRouter>  
     

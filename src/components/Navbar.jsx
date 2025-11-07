@@ -8,9 +8,11 @@ import {
   MenuItems,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const navigation = [
-  { name: "Home", href: "/Home", current: true },
+  { name: "Home", href: "/", current: true },
   { name: "sign in", href: "/login", current: false },
   { name: "Signup", href: "/signup", current: false },
   { name: "Movies", href: "/details", current: false },
@@ -21,6 +23,20 @@ function classNames(...classes) {
 }
 
 export default function Example() {
+     const [userInitial, setUserInitial] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("cinehavenUser"));
+    const loggedIn = localStorage.getItem("isLoggedIn");
+    if (user && loggedIn) {
+      setUserInitial(user.name.charAt(0).toUpperCase());
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    navigate("/login");
+  };
   return (
     <Disclosure as="nav" className="relative bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -42,11 +58,16 @@ export default function Example() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <img
+              {/* <img
                 alt="Your Company"
                 src="https://i.pinimg.com/1200x/1c/33/05/1c3305662f8ff82f1f099213dffc678d.jpg"
                 className="h-8 w-auto"
-              />
+              /> */}
+             <a className="text-2xl font-bold flex items-end" href="/">
+            <span className="text-yellow-500 ml-[0.25rem]">cine</span>
+            <span className="text-white ml-[0.25rem]">Haven</span>
+</a>
+
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
@@ -68,59 +89,64 @@ export default function Example() {
               </div>
             </div>
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            <button
-              type="button"
-              className="relative rounded-full p-1 text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
-            >
-              <span className="absolute -inset-1.5" />
-              <span className="sr-only">View notifications</span>
-              <BellIcon aria-hidden="true" className="size-6" />
-            </button>
+           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+           
+            {/* If user is logged in show first letter, else show Login/Signup */}
+            {userInitial ? (
+              <Menu as="div" className="relative ml-3">
+                <MenuButton className="relative flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500 text-black font-bold">
+                  {userInitial}
+                </MenuButton>
 
-            {/* Profile dropdown */}
-            <Menu as="div" className="relative ml-3">
-              <MenuButton className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                <span className="absolute -inset-1.5" />
-                <span className="sr-only">Open user menu</span>
-                {/* <img
-                  alt=""
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  className="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
-                /> */}
-              </MenuButton>
-
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
-              >
-                <MenuItem>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                  >
-                    Your profile
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                  >
-                    Settings
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                  >
-                    Sign out
-                  </a>
-                </MenuItem>
-              </MenuItems>
-            </Menu>
+                <MenuItems
+                  transition
+                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5"
+                >
+                  <MenuItem>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Profile
+                    </a>
+                  </MenuItem>
+                  <MenuItem>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Saved Movies
+                    </a>
+                  </MenuItem>
+                  <MenuItem>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Sign Out
+                    </button>
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
+            ) : (
+              <div className="flex gap-2 ml-3">
+          <Link
+            to="/login"
+            className="bg-yellow-500 text-black px-3 py-1 rounded text-sm font-semibold hover:bg-yellow-400 transition"
+          >
+            Login
+          </Link>
+          <Link
+            to="/signup"
+            className="border border-yellow-500 text-yellow-500 px-3 py-1 rounded text-sm font-semibold hover:bg-yellow-500 hover:text-black transition"
+          >
+            Sign Up
+          </Link>
+        </div>
+            )}
           </div>
+        
+      
         </div>
       </div>
 
@@ -147,3 +173,5 @@ export default function Example() {
     </Disclosure>
   );
 }
+
+
