@@ -7,15 +7,15 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const navigation = [
   { name: "Home", href: "/", current: true },
-  { name: "sign in", href: "/login", current: false },
-  { name: "Signup", href: "/signup", current: false },
-  { name: "Movies", href: "/details", current: false },
+  { name: "latest", href: "/", current: false },
+  { name: "All stars", href: "/", current: false },
+  { name: "Movies", href: "/movies", current: false },
 ];
 
 function classNames(...classes) {
@@ -91,7 +91,7 @@ export default function Example() {
           </div>
            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
            
-            {/* If user is logged in show first letter, else show Login/Signup */}
+            
             {userInitial ? (
               <Menu as="div" className="relative ml-3">
                 <MenuButton className="relative flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500 text-black font-bold">

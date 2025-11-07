@@ -2,13 +2,15 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { Login } from "./pages/Login"
 import { SignUp } from "./pages/SignUp"
 import { Home } from "./pages/Home"
-import { Details } from "./pages/Details"
 import Example from "./components/Navbar"
 import './App.css'
 import { ProtectedRoute } from "./components/protectedRoute"
+import { Movies } from "./pages/Movies"
+import { MovieDetails } from "./pages/MovieDetails"
 
 
 function App() {
+ 
 
 
   return (
@@ -22,7 +24,8 @@ function App() {
 
     <Route element={<ProtectedRoute/>}>
     <Route path='/' element={<Home/>}/>
-    <Route path='/details' element={< Details/>}/>
+    <Route path='/movies' element={< Movies/>}/>
+    <Route path="/movies/:id"element={<MovieDetails/>}/>
 
 
     </Route>
