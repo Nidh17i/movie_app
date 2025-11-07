@@ -9,7 +9,7 @@ console.log(id);
    
 
  return(
-    <>
+    <>movie_id
     <h1>Hii</h1>
 
 

@@ -73,7 +73,7 @@ export const Movies = () => {
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
                   {data.original_language}
                 </span>
-                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                <span className="inline-block bg-gray-200 movie_idmovie_idmovie_idmovie_idmovie_idmovie_id-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
                   {data.release_date}
                 </span>
               </div>
@@ -84,3 +84,5 @@ export const Movies = () => {
     </>
   );
 };
+
+

@@ -1,22 +1,23 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import movieData from "./MovieData.json";
+//import movieData from "./MovieData.json";
 export const Home = () => {
-  // const [movieData,setMovieData]=useState([]);
+  const [movieData,setMovieData]=useState([]);
 
-  //      useEffect(() => {
-  //     const options = {
-  //     method: 'GET',
-  //     headers: {
-  //     accept: 'application/json',
-  //     Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY'
-  //   }
-  // };
+       useEffect(() => {
+      const options = {
+      method: 'GET',
+      headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY'
+    }
+  };
 
-  // fetch('https://api.themoviedb.org/3/discover/movie?449a6d78cb0cfe81e0791416ced1965binclude_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc', options)
-  //   .then(res => res.json())
-  //   .then(res => setMovieData(res))
-  //   .catch(err => console.error(err));}, []);
-  //   console.log(movieData)
+  fetch('https://api.themoviedb.org/3/discover/movie?449a6d78cb0cfe81e0791416ced1965binclude_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc', options)
+    .then(res => res.json())
+    .then(res => setMovieData(res.results))
+    .catch(err => console.error(err));}, []);
+    console.log(movieData)
 
   console.log(movieData.results);
 
@@ -27,7 +28,7 @@ export const Home = () => {
           position: "relative",
           height: "90vh",
           backgroundImage:
-            "url('https://i.pinimg.com/1200x/49/d6/8f/49d68fc983b66770f629ff9dad146d04.jpg')",
+          "url('https://i.pinimg.com/1200x/49/d6/8f/49d68fc983b66770f629ff9dad146d04.jpg')",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
@@ -79,7 +80,7 @@ export const Home = () => {
         <h1>Trending (this week)...</h1>
         
         <div className="flex flex-wrap items-center gap-2">
-        {movieData.results.map((data) => (
+        {movieData.map((data) => (
           
           <li 
           key={data.id}>
