@@ -1,121 +1,114 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export const SignUp = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate()
+export default function Signup() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-   const handleSignUp = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
 
-    if (!name || !email || !password) {
-      alert("Please fill all fields!");
+    const users = JSON.parse(localStorage.getItem("cinehavenUsers")) || [];
+
+    const userExists = users.find((user) => user.name === formData.name);
+    if (userExists) {
+      setError("This username is already taken. Try another one.");
       return;
     }
-     const user = { 
-      name, 
-      password ,
-    };
-    localStorage.setItem("cinehavenUser", JSON.stringify(user));
-    alert('sigup suceesful');
-    navigate('/login')
 
-  }  
-    
-return (
-    <>
-      <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          
-          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white-900">
-            Sign up to your account
-          </h2>
-        </div>
+    const updatedUsers = [...users, formData];
+    localStorage.setItem("cinehavenUsers", JSON.stringify(updatedUsers));
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form
-          action="#" method="POST" className="space-y-6"
-         onSubmit={handleSignUp}>
+    localStorage.setItem("cinehavenUser", JSON.stringify(formData));
+    localStorage.setItem("isLoggedIn", true);
 
-             <div>
-              <label
-                htmlFor="username"
-                className="block text-sm/6 font-medium text-white-900"
-              >
-                UserName
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  id="username"
-                  name="mobile"
-                  required
-                  placeholder="Enter userName"
-                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm/6 font-medium text-white-900"
-              >
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="enter vaild  Email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
+    navigate("/");
+  };
 
-           
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+      <div className="bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-8">
+        <h2 className="text-3xl font-bold text-center text-yellow-500 mb-6">
+          Join cineHaven
+        </h2>
 
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm/6 font-medium text-white-900"
-                >
-                  Password
-                </label>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                     onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Sign in
-              </button>
-            </div>
-          </form>
-
+        {error && (
+          <div className="bg-red-500/20 text-red-400 text-sm text-center py-2 mb-4 rounded">
+            {error}
           </div>
+        )}
+
+        <form onSubmit={handleSignup} className="space-y-5">
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-1">
+              Username
+            </label>
+            <input
+              type="text"
+              name="name"
+              required
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full rounded-lg bg-gray-700 text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="Enter a unique username"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full rounded-lg bg-gray-700 text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="you@example.com"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full rounded-lg bg-gray-700 text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-semibold py-2 rounded-lg transition"
+          >
+            Create Account
+          </button>
+        </form>
+
+        <p className="text-center text-gray-400 text-sm mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-yellow-500 hover:underline">
+            Login
+          </Link>
+        </p>
       </div>
-    </>
+    </div>
   );
-};
+}

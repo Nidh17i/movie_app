@@ -1,29 +1,19 @@
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-} from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const navigation = [
-  { name: "Home", href: "/", current: true },
-  { name: "latest", href: "/", current: false },
-  { name: "All stars", href: "/", current: false },
-  { name: "Movies", href: "/movies", current: false },
+  { name: "Home", href: "/" },
+  { name: "Discover", href: "/discover" },
+  { name: "All stars", href: "/all-stars" },
+  { name: "Up next", href: "/upnext" },
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export default function Example() {
-     const [userInitial, setUserInitial] = useState(null);
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [userInitial, setUserInitial] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("cinehavenUser"));
@@ -37,141 +27,107 @@ export default function Example() {
     localStorage.removeItem("isLoggedIn");
     navigate("/login");
   };
+
   return (
-    <Disclosure as="nav" className="relative bg-gray-800">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            {/* Mobile menu button*/}
-            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
-              <span className="absolute -inset-0.5" />
-              <span className="sr-only">Open main menu</span>
-              <Bars3Icon
-                aria-hidden="true"
-                className="block size-6 group-data-open:hidden"
-              />
-              <XMarkIcon
-                aria-hidden="true"
-                className="hidden size-6 group-data-open:block"
-              />
-            </DisclosureButton>
+    <nav className="bg-gray-800 relative">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          <div className="flex items-center">
+            <Link to="/" className="text-2xl font-bold flex items-end">
+              <span className="text-yellow-500 ml-1">cine</span>
+              <span className="text-white ml-1">Haven</span>
+            </Link>
           </div>
-          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex shrink-0 items-center">
-              {/* <img
-                alt="Your Company"
-                src="https://i.pinimg.com/1200x/1c/33/05/1c3305662f8ff82f1f099213dffc678d.jpg"
-                className="h-8 w-auto"
-              /> */}
-             <a className="text-2xl font-bold flex items-end" href="/">
-            <span className="text-yellow-500 ml-[0.25rem]">cine</span>
-            <span className="text-white ml-[0.25rem]">Haven</span>
-</a>
 
-            </div>
-            <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-4">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    aria-current={item.current ? "page" : undefined}
-                    className={classNames(
-                      item.current
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-white/5 hover:text-white",
-                      "rounded-md px-3 py-2 text-sm font-medium"
-                    )}
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div>
-            </div>
+          {/* Desktop Links */}
+          <div className="hidden sm:flex space-x-4 ml-6">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className="text-gray-300 hover:text-white hover:bg-white/5 rounded-md px-3 py-2 text-sm font-medium"
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
-           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-           
-            
+
+          {/* Right: User or Auth buttons */}
+          <div className="flex items-center gap-2 relative">
             {userInitial ? (
-              <Menu as="div" className="relative ml-3">
-                <MenuButton className="relative flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500 text-black font-bold">
-                  {userInitial}
-                </MenuButton>
-
-                <MenuItems
-                  transition
-                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5"
+              <div className="relative">
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500 text-black font-bold"
                 >
-                  <MenuItem>
-                    <a
-                      href="#"
+                  {userInitial}
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                    <Link
+                      to="/profile"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Profile
-                    </a>
-                  </MenuItem>
-                  <MenuItem>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Saved Movies
-                    </a>
-                  </MenuItem>
-                  <MenuItem>
+                    </Link>
+                   
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Sign Out
                     </button>
-                  </MenuItem>
-                </MenuItems>
-              </Menu>
+                  </div>
+                )}
+              </div>
             ) : (
-              <div className="flex gap-2 ml-3">
-          <Link
-            to="/login"
-            className="bg-yellow-500 text-black px-3 py-1 rounded text-sm font-semibold hover:bg-yellow-400 transition"
-          >
-            Login
-          </Link>
-          <Link
-            to="/signup"
-            className="border border-yellow-500 text-yellow-500 px-3 py-1 rounded text-sm font-semibold hover:bg-yellow-500 hover:text-black transition"
-          >
-            Sign Up
-          </Link>
-        </div>
+              <div className="flex gap-2">
+                <Link
+                  to="/login"
+                  className="bg-yellow-500 text-black px-3 py-1 rounded text-sm font-semibold hover:bg-yellow-400 transition"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="border border-yellow-500 text-yellow-500 px-3 py-1 rounded text-sm font-semibold hover:bg-yellow-500 hover:text-black transition"
+                >
+                  Sign Up
+                </Link>
+              </div>
             )}
+
+            {/* Mobile Menu Button */}
+            <button
+              className="sm:hidden p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-md"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? (
+                <XMarkIcon className="h-6 w-6" />
+              ) : (
+                <Bars3Icon className="h-6 w-6" />
+              )}
+            </button>
           </div>
-        
-      
         </div>
       </div>
 
-      <DisclosurePanel className="sm:hidden">
-        <div className="space-y-1 px-2 pt-2 pb-3">
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="sm:hidden px-2 pt-2 pb-3 space-y-1 bg-gray-800 border-t border-gray-700">
           {navigation.map((item) => (
-            <DisclosureButton
+            <Link
               key={item.name}
-              as="a"
-              href={item.href}
-              aria-current={item.current ? "page" : undefined}
-              className={classNames(
-                item.current
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-300 hover:bg-white/5 hover:text-white",
-                "block rounded-md px-3 py-2 text-base font-medium"
-              )}
+              to={item.href}
+              className="block text-gray-300 hover:bg-white/5 hover:text-white rounded-md px-3 py-2 text-base font-medium"
+              onClick={() => setIsOpen(false)}
             >
               {item.name}
-            </DisclosureButton>
+            </Link>
           ))}
         </div>
-      </DisclosurePanel>
-    </Disclosure>
+      )}
+    </nav>
   );
 }
-
-

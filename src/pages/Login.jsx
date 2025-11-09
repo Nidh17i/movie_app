@@ -1,112 +1,93 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
+export default function Login() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ name: "", password: "" });
+  const [error, setError] = useState("");
 
-export const Login = () => {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate=useNavigate();
-    const handleLogin=(e)=>{
-      e.preventDefault();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-      const localuser=JSON.parse(localStorage.getItem('cinehavenUser'))
+  const handleLogin = (e) => {
+    e.preventDefault();
 
-      if(!localuser){
-        alert('no user found ! please sign up first');
-        return;
+    const users = JSON.parse(localStorage.getItem("cinehavenUsers")) || [];
+    const user = users.find(
+      (u) => u.name === formData.name && u.password === formData.password
+    );
+
+    if (!user) {
+      setError("Invalid username or password.");
+      return;
     }
 
-    if(name === localuser.name && password === localuser.password){
-      alert(`welcome back, ${localuser.name}`)
-      localStorage.setItem('isLoggedIn','true');
-      navigate('/')
-    }
-    else{
-      alert('invalid userName or password');
-    }
-  }
+    localStorage.setItem("cinehavenUser", JSON.stringify(user));
+    localStorage.setItem("isLoggedIn", true);
+    navigate("/");
+  };
 
   return (
-    <>
-      <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            alt="Your Company"
-            src="https://i.pinimg.com/1200x/1c/33/05/1c3305662f8ff82f1f099213dffc678d.jpg"
-            className="mx-auto h-10 w-auto"
-          />
-          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white-900">
-            Sign in to your account
-          </h2>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+      <div className="bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-8">
+        <h2 className="text-3xl font-bold text-center text-yellow-500 mb-6">
+          Login
+        </h2>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form  method="POST" className="space-y-6"
-            onSubmit={handleLogin}>
-           <div>
-              <label
-                htmlFor="username"
-                className="block text-sm/6 font-medium text-white-900"
-              >
-                UserName
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  id="username"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  name="mobile"
-                  required
-                  placeholder="Enter userName"
-               className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
-            <div></div>
+        {error && (
+          <div className="bg-red-500/20 text-red-400 text-sm text-center py-2 mb-4 rounded">
+            {error}
+          </div>
+        )}
 
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm/6 font-medium text-white-900"
-                >
-                  Password
-                </label>
-                
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={password}
-                  onChange={(e)=>setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-1">
+              Username
+            </label>
+            <input
+              type="text"
+              name="name"
+              required
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full rounded-lg bg-gray-700 text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="Enter your username"
+            />
+          </div>
 
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Sign in
-              </button>
-            </div>
-          </form>
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full rounded-lg bg-gray-700 text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="••••••••"
+            />
+          </div>
 
-          {/* <p className="mt-10 text-center text-sm/6 text-gray-500">
-            Not a member?{' '}
-            <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-              Start a 14 day free trial
-            </a>
-          </p> */}
-        </div>
+          <button
+            type="submit"
+            className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-semibold py-2 rounded-lg transition"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="text-center text-gray-400 text-sm mt-4">
+          Don’t have an account?{" "}
+          <Link to="/signup" className="text-yellow-500 hover:underline">
+            Sign Up
+          </Link>
+        </p>
       </div>
-    </>
+    </div>
   );
-};
+}

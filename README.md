@@ -1,16 +1,33 @@
-# React + Vite
+# CineHaven — Movie Discovery App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CineHaven is a simple and modern movie app made with the **TMDB API**.  
+You can explore popular, trending, and upcoming movies,  
+see full movie details, and save your favorite movies to watch later.  
+All your data is saved safely in your browser using localStorage.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+##  Tech Stack
+-  React.js — for building the app  
+-  Tailwind CSS — for beautiful design  
+-  React Router DOM — for page navigation  
+-  LocalStorage — to save user data  
+-  TMDB API — for movie data
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+##  Features
+-  Search and filter movies easily  
+-  See movie details (overview, rating, release date, cast, etc.)  
+-  Add movies to **Favorites**  
+-  Add movies to **Watch Next** list  
+-  Profile page to view and remove saved movies  
+-  Data stays saved even after logout (localStorage)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+##  How to Run
+1️⃣ Clone the project  
+```bash
+git clone https://github.com/nidh17i/cinehaven.git
+cd cinehaven
