@@ -1,46 +1,54 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../authSlice";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Discover", href: "/discover" },
-  { name: "All stars", href: "/all-stars" },
-  { name: "Up next", href: "/upnext" },
+  { name: "Home", href: "/home" },
+  { name: "Discover", href: "/movies" },
+  { name: "All Stars", href: "/allstars" },
+  { name: "Up Next", href: "/upnext" },
 ];
 
-export default function Navbar() {
+export default function Example() {
   const [isOpen, setIsOpen] = useState(false);
-  const [userInitial, setUserInitial] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const navigate = useNavigate();
+  const dropdownRef = useRef(null); 
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("cinehavenUser"));
-    const loggedIn = localStorage.getItem("isLoggedIn");
-    if (user && loggedIn) {
-      setUserInitial(user.name.charAt(0).toUpperCase());
-    }
-  }, []);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { userData, isLoggedIn } = useSelector((state) => state.MovieUser);
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
+    dispatch(logoutUser());
+    setDropdownOpen(false); // 👈 Close dropdown after logout
     navigate("/login");
   };
+
+  // 👇 Close dropdown when clicked outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav className="bg-gray-800 relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold flex items-end">
-              <span className="text-yellow-500 ml-1">cine</span>
-              <span className="text-white ml-1">Haven</span>
-            </Link>
-          </div>
+          {/* Logo */}
+          <Link to="/" className="text-2xl font-bold flex items-end">
+            <span className="text-yellow-500 ml-1">cine</span>
+            <span className="text-white ml-1">Haven</span>
+          </Link>
 
-          {/* Desktop Links */}
-          <div className="hidden sm:flex space-x-4 ml-6">
+          {/* Desktop Nav Links */}
+          <div className="hidden sm:flex space-x-4">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -52,31 +60,31 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right: User or Auth buttons */}
+          {/* Right Side: User or Auth Buttons */}
           <div className="flex items-center gap-2 relative">
-            {userInitial ? (
-              <div className="relative">
+            {isLoggedIn ? (
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500 text-black font-bold"
                 >
-                  {userInitial}
+                  {userData?.name?.[0]?.toUpperCase() || "U"}
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-1 z-50">
                     <Link
                       to="/profile"
+                      onClick={() => setDropdownOpen(false)} // 👈 Close dropdown on click
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Profile
                     </Link>
-                   
                     <button
                       onClick={handleLogout}
                       className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
-                      Sign Out
+                      Logout
                     </button>
                   </div>
                 )}

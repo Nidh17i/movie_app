@@ -1,11 +1,11 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
-export const ProtectedRoute=()=>{
-    const IsLoggedIn=localStorage.getItem('isLoggedIn');
-   const navigate=useNavigate();
-    if(!IsLoggedIn){
-      return  navigate('/login')
+export const ProtectedRoute = () => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-    }
-    return <Outlet/>
-}
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
+};

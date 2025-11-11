@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { setSearch, setGenre, setRating, setSort } from "../discover/DiscoverSlice";
 
 export const DiscoverMovies = () => {
+  const dispatch = useDispatch();
+  const { search, genre, rating, sort } = useSelector((state) => state.discover);
+
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [search, setSearch] = useState("");
-  const [genre, setGenre] = useState("");
-  const [rating, setRating] = useState(0);
-  const [sort, setSort] = useState("popularity.desc");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const options = {
@@ -19,10 +21,7 @@ export const DiscoverMovies = () => {
       },
     };
 
-    fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?language=en-US",
-      options
-    )
+    fetch("https://api.themoviedb.org/3/genre/movie/list?language=en-US", options)
       .then((res) => res.json())
       .then((data) => setGenres(data.genres))
       .catch((err) => console.error(err));
@@ -33,6 +32,7 @@ export const DiscoverMovies = () => {
   }, [search, genre, rating, sort]);
 
   const fetchMovies = async () => {
+    setLoading(true);
     const options = {
       method: "GET",
       headers: {
@@ -56,10 +56,11 @@ export const DiscoverMovies = () => {
     try {
       const res = await fetch(url, options);
       const data = await res.json();
-
       setMovies(data.results || []);
     } catch (error) {
       console.error("Movie fetch error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,30 +69,27 @@ export const DiscoverMovies = () => {
       <h1 className="text-4xl font-extrabold mb-8">Discover Movies</h1>
 
       <div className="flex flex-wrap items-center justify-between bg-[#1c1c1c] p-6 rounded-xl shadow-md">
+        {/* 🔍 Search */}
         <div className="flex flex-col grow max-w-md">
-          <label
-            htmlFor="search"
-            className="text-sm font-semibold text-gray-300 mb-2"
-          >
-            Search Movies...
+          <label htmlFor="search" className="text-sm font-semibold text-gray-300 mb-2">
+            Search Movies
           </label>
           <input
             type="text"
             placeholder="Search Movies..."
             id="search"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => dispatch(setSearch(e.target.value))}
             className="bg-[#2a2a2a] rounded-lg px-4 py-2 outline-none text-gray-200 w-full text-sm"
           />
         </div>
 
+        {/* 🎭 Genre */}
         <div className="flex flex-col w-52">
-          <label className="text-sm font-semibold text-gray-300 mb-2">
-            Genre
-          </label>
+          <label className="text-sm font-semibold text-gray-300 mb-2">Genre</label>
           <select
             value={genre}
-            onChange={(e) => setGenre(e.target.value)}
+            onChange={(e) => dispatch(setGenre(e.target.value))}
             className="bg-[#2a2a2a] rounded-lg px-4 py-2 outline-none text-gray-200"
           >
             <option value="">All</option>
@@ -103,10 +101,9 @@ export const DiscoverMovies = () => {
           </select>
         </div>
 
+        {/* ⭐ Rating */}
         <div className="flex flex-col w-56">
-          <label className="text-sm font-semibold text-gray-300 mb-2">
-            Minimum Rating
-          </label>
+          <label className="text-sm font-semibold text-gray-300 mb-2">Minimum Rating</label>
           <div className="flex items-center gap-3">
             <input
               type="range"
@@ -114,20 +111,19 @@ export const DiscoverMovies = () => {
               max="10"
               step="0.5"
               value={rating}
-              onChange={(e) => setRating(e.target.value)}
+              onChange={(e) => dispatch(setRating(e.target.value))}
               className="accent-yellow-500 w-full"
             />
             <span className="text-sm text-gray-300 w-6">{rating}</span>
           </div>
         </div>
 
+        {/* ↕️ Sort */}
         <div className="flex flex-col w-64">
-          <label className="text-sm font-semibold text-gray-300 mb-2">
-            Sort By
-          </label>
+          <label className="text-sm font-semibold text-gray-300 mb-2">Sort By</label>
           <select
             value={sort}
-            onChange={(e) => setSort(e.target.value)}
+            onChange={(e) => dispatch(setSort(e.target.value))}
             className="bg-[#2a2a2a] rounded-lg px-4 py-2 outline-none text-gray-200"
           >
             <option value="popularity.desc">Popularity (High to Low)</option>
@@ -140,45 +136,45 @@ export const DiscoverMovies = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-10">
-        {movies.map((movie) => (
-          <Link key={movie.id} to={`/movie/${movie.id}`}>
-            <div
-              key={movie.id}
-              className="relative bg-[#1f1f1f] rounded-2xl overflow-hidden shadow-md hover:scale-[1.03] transition-transform duration-300"
-            >
-              <img
-                src={
-                  movie.poster_path
-                    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                    : "https://via.placeholder.com/500x750?text=No+Image"
-                }
-                alt={movie.title}
-                className="w-full h-[380px] object-cover"
-              />
-
-              <span className="absolute top-3 right-3 bg-[#b5a816] text-white text-sm font-semibold px-2 py-1 rounded-md shadow-lg">
-                {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
-              </span>
-
-              <div className="p-4 bg-[#1a1a1a]">
-                <h3 className="text-lg font-bold truncate">{movie.title}</h3>
-                <p className="text-sm text-gray-400 mt-1">
-                  {movie.release_date ? movie.release_date.slice(0, 4) : "----"}{" "}
-                  •{" "}
-                  <span>
+      {/* 🎬 Movies Grid */}
+      {loading ? (
+        <p className="text-center text-gray-400 mt-10">Loading...</p>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-10">
+          {movies.map((movie) => (
+            <Link key={movie.id} to={`/movies/${movie.id}`}>
+              <div className="relative bg-[#1f1f1f] rounded-2xl overflow-hidden shadow-md hover:scale-[1.03] transition-transform duration-300">
+                <img
+                  src={
+                    movie.poster_path
+                      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                      : "https://placehold.co/500x750?text=No+Image"
+                  }
+                  alt={movie.title}
+                  onError={(e) =>
+                    (e.target.src = "https://placehold.co/500x750?text=No+Image")
+                  }
+                  className="w-full h-[380px] object-cover"
+                />
+                <span className="absolute top-3 right-3 bg-[#b5a816] text-white text-sm font-semibold px-2 py-1 rounded-md shadow-lg">
+                  {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
+                </span>
+                <div className="p-4 bg-[#1a1a1a]">
+                  <h3 className="text-lg font-bold truncate">{movie.title}</h3>
+                  <p className="text-sm text-gray-400 mt-1">
+                    {movie.release_date ? movie.release_date.slice(0, 4) : "----"} •{" "}
                     {movie.genre_ids
                       ?.map((id) => genres.find((g) => g.id === id)?.name)
                       .filter(Boolean)
                       .slice(0, 3)
                       .join(", ") || "Unknown"}
-                  </span>
-                </p>
+                  </p>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
