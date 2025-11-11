@@ -16,7 +16,7 @@ const AuthSlice = createSlice({
         state.error = "Username exists";
         return;
       }
-      const newUser = { ...action.payload, favorites: [], watchlist: [] };
+      const newUser = { ...action.payload };
       all.push(newUser);
       localStorage.setItem("movieUsers", JSON.stringify(all));
       localStorage.setItem("movieUser", JSON.stringify(newUser));
@@ -26,8 +26,9 @@ const AuthSlice = createSlice({
       state.error = "";
     },
     loginUser: (state, action) => {
+      const{name,password}=action.payload;
       const all = JSON.parse(localStorage.getItem("movieUsers")) || [];
-      const u = all.find(x => x.name === action.payload.name && x.password === action.payload.password);
+      const u = all.find(x => x.name === name && x.password === password);
       if (!u) { state.error = "Invalid username/password"; return; }
       localStorage.setItem("movieUser", JSON.stringify(u));
       localStorage.setItem("isLoggedIn", true);

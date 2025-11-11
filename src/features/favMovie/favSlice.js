@@ -1,28 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Helper functions
-const loadFromLocalStorage = (userId, key) => {
-  try {
-    const data = localStorage.getItem(`${userId}_${key}`);
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-};
-
-const saveToLocalStorage = (userId, key, data) => {
-  localStorage.setItem(`${userId}_${key}`, JSON.stringify(data));
-};
-
-// Function to get current logged-in user ID
-const getCurrentUserId = () => {
-  const user = JSON.parse(localStorage.getItem("movieUser"));
-  return user ? user.name : "guest"; // fallback to guest
-};
-
 const initialState = {
-  favorites: loadFromLocalStorage(getCurrentUserId(), "favorites"),
-  watchlist: loadFromLocalStorage(getCurrentUserId(), "watchlist"),
+  Favorite: [],
+  WatchList: [],
 };
 
 const favSlice = createSlice({
@@ -30,36 +10,23 @@ const favSlice = createSlice({
   initialState,
   reducers: {
     addFavorite: (state, action) => {
-      const userId = getCurrentUserId();
-      const movie = action.payload;
-      if (!state.favorites.find((m) => m.id === movie.id)) {
-        state.favorites.push(movie);
-        saveToLocalStorage(userId, "favorites", state.favorites);
-      }
+      localStorage.setItem("favMovie", JSON.stringify(action.payload));
+      state.Favorite.push(action.payload);
     },
     removeFavorite: (state, action) => {
-      const userId = getCurrentUserId();
-      state.favorites = state.favorites.filter((m) => m.id !== action.payload);
-      saveToLocalStorage(userId, "favorites", state.favorites);
+      //console.log(action.payload);
+
+      state.Favorite = state.Favorite.filter((m) => m.id !== action.payload);
+      console.log("fav", state.Favorite);
+      localStorage.setItem("favMovie", JSON.stringify(state.Favorite));
     },
-    addToWatchlist: (state, action) => {
-      const userId = getCurrentUserId();
-      const movie = action.payload;
-      if (!state.watchlist.find((m) => m.id === movie.id)) {
-        state.watchlist.push(movie);
-        saveToLocalStorage(userId, "watchlist", state.watchlist);
-      }
+    addtoWatchList: (state, action) => {
+      localStorage.setItem("favWatchList", JSON.stringify(action.payload));
+      state.WatchList.push(action.payload);
     },
-    removeFromWatchlist: (state, action) => {
-      const userId = getCurrentUserId();
-      state.watchlist = state.watchlist.filter((m) => m.id !== action.payload);
-      saveToLocalStorage(userId, "watchlist", state.watchlist);
-    },
-    // Optional: refresh state when user logs in/out
-    setUser: (state) => {
-      const userId = getCurrentUserId();
-      state.favorites = loadFromLocalStorage(userId, "favorites");
-      state.watchlist = loadFromLocalStorage(userId, "watchlist");
+    removetoWatchList: (state, action) => {
+      state.WatchList = state.WatchList.filter((m) => m.id != action.payload);
+      localStorage.setItem("favWatchList", JSON.stringify(state.WatchList));
     },
   },
 });
@@ -67,9 +34,8 @@ const favSlice = createSlice({
 export const {
   addFavorite,
   removeFavorite,
-  addToWatchlist,
-  removeFromWatchlist,
-  setUser,
+  addtoWatchList,
+  removetoWatchList,
 } = favSlice.actions;
 
 export default favSlice.reducer;

@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../authSlice";
-import { setUser } from "../features/favMovie/favSlice"; 
+import { loginUser } from "../AuthSlice";
+
 
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.MovieUser);
 
-  const [formData, setFormData] = useState({ name: "", password: "" });
+  const [formData, setFormData] = useState( { 
+    name: "",
+    password: "" 
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,7 +22,6 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(loginUser(formData));
-    dispatch(setUser()); // refresh favorites & watchlist for this user
     navigate("/");
   };
 

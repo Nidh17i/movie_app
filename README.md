@@ -3,7 +3,6 @@
 CineHaven is a simple and modern movie app made with the **TMDB API**.  
 You can explore popular, trending, and upcoming movies,  
 see full movie details, and save your favorite movies to watch later.  
-All your data is saved safely in your browser using localStorage.
 
 ---
 
@@ -27,7 +26,7 @@ All your data is saved safely in your browser using localStorage.
 ---
 
 ##  How to Run
-1️⃣ Clone the project  
-```bash
-git clone https://github.com/nidh17i/cinehaven.git
-cd cinehaven
+Clone the project  
+
+
+

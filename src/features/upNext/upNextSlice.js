@@ -1,4 +1,3 @@
-// src/redux/slices/upNextSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -10,14 +9,12 @@ const upNextSlice = createSlice({
   name: "upNext",
   initialState,
   reducers: {
-    setPage: (state, action) => {
-      state.page = action.payload;
-    },
+    
     setSort: (state, action) => {
       state.sort = action.payload;
     },
   },
 });
 
-export const { setPage, setSort } = upNextSlice.actions;
+export const { setSort } = upNextSlice.actions;
 export default upNextSlice.reducer;

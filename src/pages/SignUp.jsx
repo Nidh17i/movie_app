@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { signupUser } from "../authSlice";
-import { setUser } from "../features/favMovie/favSlice"; 
+import { signupUser } from "../AuthSlice";
+
 
 export default function Signup() {
   const dispatch = useDispatch();
@@ -23,15 +23,17 @@ export default function Signup() {
   const handleSignup = (e) => {
     e.preventDefault();
     dispatch(signupUser(formData));
-    dispatch(setUser()); // refresh favorites & watchlist for new user
-  };
+  
+  }
 
   if (isLoggedIn) navigate("/");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
       <div className="bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-8">
-        <h2 className="text-3xl font-bold text-center text-yellow-500 mb-6">Join cineHaven</h2>
+        <h2 className="text-3xl font-bold text-center text-yellow-500 mb-6">
+          Join cineHaven
+        </h2>
 
         {error && (
           <div className="bg-red-500/20 text-red-400 text-sm text-center py-2 mb-4 rounded">
@@ -41,7 +43,9 @@ export default function Signup() {
 
         <form onSubmit={handleSignup} className="space-y-5">
           <div>
-            <label className="block text-gray-300 text-sm font-medium mb-1">Username</label>
+            <label className="block text-gray-300 text-sm font-medium mb-1">
+              Username
+            </label>
             <input
               type="text"
               name="name"
@@ -54,7 +58,9 @@ export default function Signup() {
           </div>
 
           <div>
-            <label className="block text-gray-300 text-sm font-medium mb-1">Email</label>
+            <label className="block text-gray-300 text-sm font-medium mb-1">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -67,7 +73,9 @@ export default function Signup() {
           </div>
 
           <div>
-            <label className="block text-gray-300 text-sm font-medium mb-1">Password</label>
+            <label className="block text-gray-300 text-sm font-medium mb-1">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -89,7 +97,9 @@ export default function Signup() {
 
         <p className="text-center text-gray-400 text-sm mt-4">
           Already have an account?{" "}
-          <Link to="/login" className="text-yellow-500 hover:underline">Login</Link>
+          <Link to="/login" className="text-yellow-500 hover:underline">
+            Login
+          </Link>
         </p>
       </div>
     </div>

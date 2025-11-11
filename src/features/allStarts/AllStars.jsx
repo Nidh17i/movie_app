@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { setSort, setGenre, setRating } from "./allStarsSlice";
 
+
 const API_OPTIONS = {
   method: "GET",
   headers: {
@@ -21,7 +22,10 @@ export const AllStars = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("https://api.themoviedb.org/3/genre/movie/list?language=en-US", API_OPTIONS)
+    fetch(
+      "https://api.themoviedb.org/3/genre/movie/list?language=en-US",
+      API_OPTIONS
+    )
       .then((res) => res.json())
       .then((data) => setGenres(data.genres || []))
       .catch((err) => console.error(err));
@@ -49,12 +53,15 @@ export const AllStars = () => {
 
   return (
     <div className="w-full bg-[#0f0f0f] text-white px-12 py-10">
-      <h1 className="text-4xl font-extrabold mb-8">Top Rated Movies (All Stars)</h1>
+      <h1 className="text-4xl font-extrabold mb-8">
+        Top Rated Movies (All Stars)
+      </h1>
 
-      {/* Filters */}
       <div className="flex flex-wrap justify-between bg-[#1c1c1c] p-6 rounded-xl shadow-md">
         <div className="flex flex-col w-52">
-          <label className="text-sm font-semibold text-gray-300 mb-2">Genre</label>
+          <label className="text-sm font-semibold text-gray-300 mb-2">
+            Genre
+          </label>
           <select
             value={genre}
             onChange={(e) => dispatch(setGenre(e.target.value))}
@@ -70,7 +77,9 @@ export const AllStars = () => {
         </div>
 
         <div className="flex flex-col w-56">
-          <label className="text-sm font-semibold text-gray-300 mb-2">Minimum Rating</label>
+          <label className="text-sm font-semibold text-gray-300 mb-2">
+            Minimum Rating
+          </label>
           <input
             type="range"
             min="0"
@@ -84,7 +93,9 @@ export const AllStars = () => {
         </div>
 
         <div className="flex flex-col w-64">
-          <label className="text-sm font-semibold text-gray-300 mb-2">Sort By</label>
+          <label className="text-sm font-semibold text-gray-300 mb-2">
+            Sort By
+          </label>
           <select
             value={sort}
             onChange={(e) => dispatch(setSort(e.target.value))}
@@ -98,7 +109,6 @@ export const AllStars = () => {
         </div>
       </div>
 
-      {/* Movie Grid */}
       {loading ? (
         <p className="text-center mt-10 text-gray-400">Loading...</p>
       ) : (

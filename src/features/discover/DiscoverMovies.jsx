@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { setSearch, setGenre, setRating, setSort } from "../discover/DiscoverSlice";
+import {setSearch,setGenre,setRating,setSort,} from "../discover/DiscoverSlice";
 
 export const DiscoverMovies = () => {
   const dispatch = useDispatch();
-  const { search, genre, rating, sort } = useSelector((state) => state.discover);
+  const { search, genre, rating, sort } = useSelector(
+    (state) => state.discover
+  );
 
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -21,7 +23,10 @@ export const DiscoverMovies = () => {
       },
     };
 
-    fetch("https://api.themoviedb.org/3/genre/movie/list?language=en-US", options)
+    fetch(
+      "https://api.themoviedb.org/3/genre/movie/list?language=en-US",
+      options
+    )
       .then((res) => res.json())
       .then((data) => setGenres(data.genres))
       .catch((err) => console.error(err));
@@ -69,9 +74,11 @@ export const DiscoverMovies = () => {
       <h1 className="text-4xl font-extrabold mb-8">Discover Movies</h1>
 
       <div className="flex flex-wrap items-center justify-between bg-[#1c1c1c] p-6 rounded-xl shadow-md">
-        {/* 🔍 Search */}
         <div className="flex flex-col grow max-w-md">
-          <label htmlFor="search" className="text-sm font-semibold text-gray-300 mb-2">
+          <label
+            htmlFor="search"
+            className="text-sm font-semibold text-gray-300 mb-2"
+          >
             Search Movies
           </label>
           <input
@@ -84,9 +91,10 @@ export const DiscoverMovies = () => {
           />
         </div>
 
-        {/* 🎭 Genre */}
         <div className="flex flex-col w-52">
-          <label className="text-sm font-semibold text-gray-300 mb-2">Genre</label>
+          <label className="text-sm font-semibold text-gray-300 mb-2">
+            Genre
+          </label>
           <select
             value={genre}
             onChange={(e) => dispatch(setGenre(e.target.value))}
@@ -101,9 +109,10 @@ export const DiscoverMovies = () => {
           </select>
         </div>
 
-        {/* ⭐ Rating */}
         <div className="flex flex-col w-56">
-          <label className="text-sm font-semibold text-gray-300 mb-2">Minimum Rating</label>
+          <label className="text-sm font-semibold text-gray-300 mb-2">
+            Minimum Rating
+          </label>
           <div className="flex items-center gap-3">
             <input
               type="range"
@@ -118,9 +127,10 @@ export const DiscoverMovies = () => {
           </div>
         </div>
 
-        {/* ↕️ Sort */}
         <div className="flex flex-col w-64">
-          <label className="text-sm font-semibold text-gray-300 mb-2">Sort By</label>
+          <label className="text-sm font-semibold text-gray-300 mb-2">
+            Sort By
+          </label>
           <select
             value={sort}
             onChange={(e) => dispatch(setSort(e.target.value))}
@@ -136,7 +146,6 @@ export const DiscoverMovies = () => {
         </div>
       </div>
 
-      {/* 🎬 Movies Grid */}
       {loading ? (
         <p className="text-center text-gray-400 mt-10">Loading...</p>
       ) : (
@@ -152,7 +161,8 @@ export const DiscoverMovies = () => {
                   }
                   alt={movie.title}
                   onError={(e) =>
-                    (e.target.src = "https://placehold.co/500x750?text=No+Image")
+                    (e.target.src =
+                      "https://placehold.co/500x750?text=No+Image")
                   }
                   className="w-full h-[380px] object-cover"
                 />
@@ -162,7 +172,10 @@ export const DiscoverMovies = () => {
                 <div className="p-4 bg-[#1a1a1a]">
                   <h3 className="text-lg font-bold truncate">{movie.title}</h3>
                   <p className="text-sm text-gray-400 mt-1">
-                    {movie.release_date ? movie.release_date.slice(0, 4) : "----"} •{" "}
+                    {movie.release_date
+                      ? movie.release_date.slice(0, 4)
+                      : "----"}{" "}
+                    •{" "}
                     {movie.genre_ids
                       ?.map((id) => genres.find((g) => g.id === id)?.name)
                       .filter(Boolean)

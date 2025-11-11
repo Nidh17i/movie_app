@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../authSlice";
+import { logoutUser } from "../AuthSlice";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const navigation = [
@@ -22,11 +22,11 @@ export default function Example() {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    setDropdownOpen(false); // 👈 Close dropdown after logout
+    setDropdownOpen(false); 
     navigate("/login");
   };
 
-  // 👇 Close dropdown when clicked outside
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -41,13 +41,13 @@ export default function Example() {
     <nav className="bg-gray-800 relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
+         
           <Link to="/" className="text-2xl font-bold flex items-end">
             <span className="text-yellow-500 ml-1">cine</span>
             <span className="text-white ml-1">Haven</span>
           </Link>
 
-          {/* Desktop Nav Links */}
+      
           <div className="hidden sm:flex space-x-4">
             {navigation.map((item) => (
               <Link
@@ -60,7 +60,6 @@ export default function Example() {
             ))}
           </div>
 
-          {/* Right Side: User or Auth Buttons */}
           <div className="flex items-center gap-2 relative">
             {isLoggedIn ? (
               <div className="relative" ref={dropdownRef}>
@@ -75,7 +74,7 @@ export default function Example() {
                   <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-1 z-50">
                     <Link
                       to="/profile"
-                      onClick={() => setDropdownOpen(false)} // 👈 Close dropdown on click
+                      onClick={() => setDropdownOpen(false)} 
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Profile
