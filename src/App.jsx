@@ -1,11 +1,8 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Example from "./components/Navbar";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import { Home } from "./pages/Home";
-
-
 
 import { NotFound } from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -20,34 +17,28 @@ import HomePage from "./pages/PHome";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter >
       <Example />
 
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Home/>} />
-        <Route path="/signup" element={<SignUp/>} />
-       
-       <Route path="/login" element={<Login/>}/>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<SignUp />} />
 
-        // {/* Protected Routes */}
+        <Route path="/login" element={<Login />} />
+
         <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<HomePage/>}/>
+          <Route path="/home" element={<HomePage />} />
           <Route path="/movies" element={<DiscoverMovies />} />
-          <Route path="/movies/:id" element={<MovieDetails/>} /> 
-          <Route path="/allstars" element={<AllStars/>} />
-          <Route path="/upnext" element={<UpNext/>} />
-           <Route path="/profile" element={<Profile/>} /> 
+          <Route path="/movies/:id" element={<MovieDetails />} />
+          <Route path="/allstars" element={<AllStars />} />
+          <Route path="/upnext" element={<UpNext />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
-        {/* 404  */}
-        <Route path="*" element={<NotFound/>} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
-      
     </BrowserRouter>
-    
   );
-  
 }
 
 export default App;
-

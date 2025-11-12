@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -49,14 +50,12 @@ export const DiscoverMovies = () => {
 
     let url = "";
 
-    if (search) {
-      url = `https://api.themoviedb.org/3/search/movie?query=${search}&language=en-US&page=1&include_adult=false`;
-    } else {
+    
       url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1`;
       if (genre) url += `&with_genres=${genre}`;
       if (rating) url += `&vote_average.gte=${rating}`;
       if (sort) url += `&sort_by=${sort}`;
-    }
+   
 
     try {
       const res = await fetch(url, options);
@@ -74,22 +73,7 @@ export const DiscoverMovies = () => {
       <h1 className="text-4xl font-extrabold mb-8">Discover Movies</h1>
 
       <div className="flex flex-wrap items-center justify-between bg-[#1c1c1c] p-6 rounded-xl shadow-md">
-        <div className="flex flex-col grow max-w-md">
-          <label
-            htmlFor="search"
-            className="text-sm font-semibold text-gray-300 mb-2"
-          >
-            Search Movies
-          </label>
-          <input
-            type="text"
-            placeholder="Search Movies..."
-            id="search"
-            value={search}
-            onChange={(e) => dispatch(setSearch(e.target.value))}
-            className="bg-[#2a2a2a] rounded-lg px-4 py-2 outline-none text-gray-200 w-full text-sm"
-          />
-        </div>
+        
 
         <div className="flex flex-col w-52">
           <label className="text-sm font-semibold text-gray-300 mb-2">

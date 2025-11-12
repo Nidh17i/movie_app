@@ -13,6 +13,7 @@ const discoverSlice = createSlice({
   initialState,
   reducers: {
     setSearch: (state, action) => {
+      console.log('action',action.payload)
       state.search = action.payload;
     },
     setGenre: (state, action) => {

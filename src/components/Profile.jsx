@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../AuthSlice";
-import {  useNavigate } from "react-router-dom";
+import {  Link, useNavigate } from "react-router-dom";
 import {removeFavorite,removetoWatchList,loadUserFavData,clearFavState} from '../features/favMovie/favSlice'
 import { useEffect } from "react";
 
@@ -45,10 +45,14 @@ useEffect(() => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {Favorite.map((movie) => (
+             
+               
               <div
                 key={movie.id}
                 className="bg-gray-800 rounded-lg overflow-hidden shadow"
               >
+                <Link key={movie.id} to={`/movies/${movie.id}`}>
+                <div>
                 <img
                   src={
                     movie.poster_path
@@ -57,19 +61,30 @@ useEffect(() => {
                   }
                   alt={movie.title}
                   className="w-full h-64 object-cover"
-                />
-                <div className="p-2 flex justify-between items-center">
+                 />
+                 <div className="p-2 flex justify-between items-center">
                   <p className="text-sm font-medium">{movie.title}</p>
-                  <button
-                    onClick={() => dispatch(removeFavorite({ id: movie.id, userKey: userData.namel }))}
+                    </div>
+                    </div></Link>
+                    
+                <div className="p-2 flex justify-between items-center">
+                  
+                    <button
+                    onClick={() => dispatch(removeFavorite({ id: movie.id, userKey: userData.name }))}
                     className="text-red-500 hover:text-red-400"
                   >
                     Remove
                   </button>
+                 
                 </div>
+                
               </div>
+              
+              
+             
             ))}
           </div>
+          
         )}
       </div>
 
@@ -80,10 +95,13 @@ useEffect(() => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {WatchList.map((movie) => (
+             
               <div
                 key={movie.id}
                 className="bg-gray-800 rounded-lg overflow-hidden shadow"
               >
+                  <Link key={movie.id} to={`/movies/${movie.id}`}>
+                <div>
                 <img
                   src={
                     movie.poster_path
@@ -94,6 +112,10 @@ useEffect(() => {
                   className="w-full h-64 object-cover"
                 />
                 <div className="p-2 flex justify-between items-center">
+                  <p className="text-sm font-medium">{movie.title}</p></div>
+               </div></Link>
+
+                <div className="p-2 flex justify-between items-center">
                   <p className="text-sm font-medium">{movie.title}</p>
                   <button
                     onClick={() =>  dispatch(removetoWatchList({ id: movie.id, userKey: userData.email }))}
@@ -103,6 +125,7 @@ useEffect(() => {
                   </button>
                 </div>
               </div>
+              
             ))}
           </div>
         )}

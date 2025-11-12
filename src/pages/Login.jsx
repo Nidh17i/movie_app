@@ -22,7 +22,7 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(loginUser(formData));
-    navigate("/");
+    navigate("/home");
   };
 
   return (

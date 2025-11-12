@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {addFavorite,addtoWatchList} from '../favMovie/favSlice'
+import {
+  addFavorite,
+  addtoWatchList,
+
+} from "../favMovie/favSlice";
 
 const MovieDetails = () => {
   const { id } = useParams();
-  const dispatch=useDispatch();
-      
-  const {Favorite,WatchList}=useSelector((state)=>state.favmovies)
+  const dispatch = useDispatch();
+  const { isfav,iswatch } = useSelector((state) => state.favmovies);
+ // console.log(iswatch )
+ 
+ 
   const { userData } = useSelector((state) => state.MovieUser);
-  console.log(userData);
+  //console.log(userData);
 
- /// console.log( 'fav mvoie',Favorite);
-  //console.log( 'watch',WatchList);
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +37,6 @@ const MovieDetails = () => {
           options
         );
         const data = await res.json();
-        //console.log(data);
         setMovie(data);
       } catch (err) {
         console.error("Failed to fetch movie details:", err);
@@ -49,9 +52,7 @@ const MovieDetails = () => {
     return <p className="text-center text-gray-400 mt-10">Loading...</p>;
   if (!movie)
     return <p className="text-center text-gray-400 mt-10">Movie not found.</p>;
-  
 
- 
   return (
     <div className="w-full min-h-screen bg-[#0f0f0f] text-white p-6 sm:p-12">
       <div className="flex flex-col md:flex-row gap-10">
@@ -91,30 +92,33 @@ const MovieDetails = () => {
             {movie.overview || "No description available."}
           </p>
 
-         <div className="flex gap-4 flex-wrap mt-4">
-
-  <button
-    onClick={() => {
-      if (!userData) return alert("Please login first!");
-      dispatch(addFavorite({ movie, userKey: userData.name }));
-    }}
-    className="px-6 py-2 rounded-lg font-medium border border-green-400 text-green-300 hover:bg-green-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-green-500/50"
-  >
-     Add to Favorite
-  </button>
-
- 
-  <button
-    onClick={() => {
-      if (!userData) return alert("Please login first!");
-      dispatch(addtoWatchList({ movie, userKey: userData.name }));
-    }}
-    className="px-6 py-2 rounded-lg font-medium border border-blue-400 text-blue-300 hover:bg-blue-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-blue-500/50"
-  >
-   Add to Watchlist
-  </button>
-</div>
-
+          <div className="flex gap-4 flex-wrap mt-4">
+         {!isfav ?(<button
+              onClick={() => {
+                dispatch(addFavorite({ movie, userKey: userData.name }));
+              }}
+              className="px-6 py-2 rounded-lg font-medium border border-green-400 text-green-300 hover:bg-green-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-green-500/50"
+            >
+              Add to Favorite
+            </button>):(<h5
+            className="px-6 py-2 rounded-lg font-medium border border-green-400 text-green-300 hover:bg-green-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-green-500/50"
+            >added</h5>) }
+            
+            
+            {!iswatch ? (<button
+              onClick={() => {
+                dispatch(addtoWatchList({ movie, userKey: userData.name }));
+              }}
+              className="px-6 py-2 rounded-lg font-medium border border-blue-400 text-blue-300 hover:bg-blue-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-blue-500/50"
+            >
+              Add to Watchlist
+            </button>):(
+              <h5
+            className="px-6 py-2 rounded-lg font-medium border border-blue-400 text-blue-300 hover:bg-blue-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-blue-500/50"
+            >watchNow</h5>
+            )}
+            
+          </div>
         </div>
       </div>
     </div>

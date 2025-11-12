@@ -17,7 +17,7 @@ see full movie details, and save your favorite movies to watch later.
 
 ##  Features
 -  Search and filter movies easily  
--  See movie details (overview, rating, release date, cast, etc.)  
+-  See movie details (overview, rating, release date, etc.)  
 -  Add movies to **Favorites**  
 -  Add movies to **Watch Next** list  
 -  Profile page to view and remove saved movies  

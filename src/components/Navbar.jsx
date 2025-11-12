@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../AuthSlice";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+// const {toggleTheme}=useContext(ThemeContext)
 
 const navigation = [
   { name: "Home", href: "/home" },
@@ -49,7 +50,7 @@ export default function Example() {
 
       
           <div className="hidden sm:flex space-x-4">
-            {navigation.map((item) => (
+            {isLoggedIn && navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
@@ -61,6 +62,7 @@ export default function Example() {
           </div>
 
           <div className="flex items-center gap-2 relative">
+        
             {isLoggedIn ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -102,6 +104,7 @@ export default function Example() {
                 >
                   Sign Up
                 </Link>
+                
               </div>
             )}
 
