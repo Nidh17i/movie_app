@@ -1,57 +1,45 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setSort } from "../upNext/upNextSlice";
 import { Link } from "react-router-dom";
+import { setMovies, setLoading } from "./upNextSlice";
+
+const API_OPTIONS = {
+  method: "GET",
+  headers: {
+    accept: "application/json",
+    Authorization:
+      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY",
+  },
+};
+
 
 export const UpNext = () => {
-  const { sort } = useSelector((state) => state.upNext);
   const dispatch = useDispatch();
-
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const API_TOKEN =
-    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY";
+  const { movies, loading } = useSelector((state) => state.upNext);
 
   useEffect(() => {
-    fetchMovies();
-  }, [sort]);
+    const fetchUpcoming = async () => {
+      dispatch(setLoading(true));
+      try {
+        const res = await fetch(
+          "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1",
+          API_OPTIONS
+        );
+        const data = await res.json();
+        dispatch(setMovies(data.results || []));
+      } catch (err) {
+        console.error("Error fetching upcoming movies:", err);
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
 
-  const fetchMovies = async () => {
-    setLoading(true);
-    try {
-      const url = `https://api.themoviedb.org/3/movie/upcoming?language=en-US`;
-      const res = await fetch(url, {
-        headers: { accept: "application/json", Authorization: API_TOKEN },
-      });
-      const data = await res.json();
-      setMovies(data.results || []);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchUpcoming();
+  }, [dispatch]);
 
   return (
     <div className="w-full bg-[#0f0f0f] text-white px-12 py-10">
       <h1 className="text-4xl font-extrabold mb-8">Upcoming Movies</h1>
-
-      <div className="flex flex-col sm:flex-row justify-start items-center bg-[#1c1c1c] p-6 rounded-xl shadow-md mb-6">
-        <div className="flex flex-col w-64">
-          <label className="text-sm font-semibold text-gray-300 mb-2">Sort By</label>
-          <select
-            value={sort}
-            onChange={(e) => dispatch(setSort(e.target.value))}
-            className="bg-[#2a2a2a] rounded-lg px-4 py-2 outline-none text-gray-200"
-          >
-            <option value="release_date.desc">Newest First</option>
-            <option value="release_date.asc">Oldest First</option>
-            <option value="popularity.desc">Most Popular</option>
-            <option value="popularity.asc">Least Popular</option>
-          </select>
-        </div>
-      </div>
 
       {loading ? (
         <p className="text-center mt-10 text-gray-400">Loading...</p>
@@ -71,7 +59,7 @@ export const UpNext = () => {
                 />
                 <div className="p-4 bg-[#1a1a1a]">
                   <h3 className="text-lg font-bold truncate">{movie.title}</h3>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-gray-400 mt-1">
                     {movie.release_date || "Unknown"}
                   </p>
                 </div>

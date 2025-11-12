@@ -1,33 +1,61 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const API_TOKEN =
-  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY";
-
-const IMAGE_BASE = "https://image.tmdb.org/t/p/w780";
-
 export default function HomePage() {
   const [movies, setMovies] = useState([]);
+  const [genres, setGenres] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchPopular();
+    fetchGenres();
+    fetchTrendingMovies();
   }, []);
 
-  const fetchPopular = async () => {
-    setLoading(true);
+  // ✅ Fetch genres from TMDB
+  const fetchGenres = async () => {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY",
+      },
+    };
+
     try {
       const res = await fetch(
-        "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
-        {
-          headers: { accept: "application/json", Authorization: API_TOKEN },
-        }
+        "https://api.themoviedb.org/3/genre/movie/list?language=en",
+        options
       );
       const data = await res.json();
-      setMovies(data.results.slice(0, 10));
+      setGenres(data.genres || []);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching genres:", err);
+    }
+  };
+
+  // ✅ Fetch trending movies
+  const fetchTrendingMovies = async () => {
+    setLoading(true);
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY",
+      },
+    };
+
+    try {
+      const res = await fetch(
+        "https://api.themoviedb.org/3/trending/movie/week?language=en-US",
+        options
+      );
+      const data = await res.json();
+      setMovies(data.results || []);
+    } catch (err) {
+      console.error("Error fetching trending movies:", err);
     } finally {
       setLoading(false);
     }
@@ -35,37 +63,53 @@ export default function HomePage() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!search) return fetchPopular();
+    if (!search) return fetchTrendingMovies();
 
     setLoading(true);
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY",
+      },
+    };
+
     try {
       const res = await fetch(
         `https://api.themoviedb.org/3/search/movie?query=${search}&language=en-US&page=1`,
-        {
-          headers: { accept: "application/json", Authorization: API_TOKEN },
-        }
+        options
       );
       const data = await res.json();
-      setMovies(data.results.slice(0, 10));
+      setMovies(data.results || []);
     } catch (err) {
-      console.error(err);
+      console.error("Search error:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  // 🔍 Helper: convert genre IDs to names
+  const getGenreNames = (ids = []) => {
+    const matched = genres
+      .filter((g) => ids.includes(g.id))
+      .map((g) => g.name);
+    return matched.join(", ");
+  };
+
   return (
-    <div className="w-full min-h-screen bg-[#0f0f0f] text-white p-6 sm:p-12">
+    <div className="min-h-screen bg-[#0d0d0d] text-white px-6 py-10 sm:px-12">
+      {/* 🔍 Search Bar */}
       <form
         onSubmit={handleSearch}
-        className="flex justify-center mb-8 w-full max-w-2xl mx-auto"
+        className="flex justify-center mb-10 w-full max-w-2xl mx-auto"
       >
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search movies..."
-          className="w-full rounded-l-lg p-3 bg-gray-800 text-white focus:outline-none"
+          placeholder="Search Movies..."
+          className="w-full rounded-l-lg p-3 bg-[#1a1a1a] text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
         />
         <button
           type="submit"
@@ -75,44 +119,52 @@ export default function HomePage() {
         </button>
       </form>
 
+     <h2 className="text-2xl font-semibold mb-8 text-gray-200 text-center">
+       Trending This Week...
+</h2>
+
+
+     
       {loading ? (
         <p className="text-center text-gray-400 mt-10">Loading...</p>
+      ) : movies.length === 0 ? (
+        <p className="text-center text-gray-400">No movies found.</p>
       ) : (
-        <div className="flex overflow-x-auto gap-6 snap-x snap-mandatory scrollbar-hide">
-          {movies.map((movie) => {
-            return (
-              <div
-                key={movie.id}
-                className="flex-shrink-0 w-[80%] sm:w-[60%] md:w-[45%] lg:w-[30%] snap-center relative"
-              >
-                <Link to={`/movies/${movie.id}`}>
-                  <img
-                    src={
-                      movie.backdrop_path
-                        ? `${IMAGE_BASE}${movie.backdrop_path}`
-                        : "https://via.placeholder.com/780x450?text=No+Image"
-                    }
-                    alt={movie.title}
-                    className="rounded-2xl object-cover w-full h-[400px]"
-                  />
-                </Link>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8">
+          {movies.slice(0, 8).map((movie) => (
+            <Link key={movie.id} to={`/movies/${movie.id}`}>
+              <div className="relative bg-[#1a1a1a] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              
+                <img
+                  src={
+                    movie.poster_path
+                      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                      : "https://placehold.co/500x750?text=No+Image"
+                  }
+                  alt={movie.title}
+                  className="w-full h-[400px] object-cover"
+                />
 
-                <div className="flex gap-4 flex-wrap mt-4">
-                  <button className="px-5 py-2 rounded-lg font-medium border border-white text-white hover:text-gray-200 transition-colors duration-300">
-                    Add to Favorite
-                  </button>
-
-                  <button className="px-5 py-2 rounded-lg font-medium border border-white text-white hover:text-gray-200 transition-colors duration-300">
-                    Add to Watchlist
-                  </button>
+               
+                <div className="absolute top-3 right-3 bg-yellow-500 text-black font-bold text-sm px-2 py-1 rounded-md">
+                  {movie.vote_average?.toFixed(1) || "N/A"}
                 </div>
 
-                <h3 className="mt-2 text-xl font-bold text-center truncate">
-                  {movie.title}
-                </h3>
+               
+                <div className="p-4">
+                  <h3 className="text-lg font-bold mb-1 truncate">
+                    {movie.title}
+                  </h3>
+                  <p className="text-sm text-gray-400 truncate">
+                    {movie.release_date
+                      ? movie.release_date.slice(0, 4)
+                      : "----"}{" "}
+                    • {getGenreNames(movie.genre_ids) || "N/A"}
+                  </p>
+                </div>
               </div>
-            );
-          })}
+            </Link>
+          ))}
         </div>
       )}
     </div>

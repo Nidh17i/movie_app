@@ -1,20 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  page: 1,
-  sort: "release_date.desc",
+  movies: [],   
+  loading: false, 
 };
 
 const upNextSlice = createSlice({
   name: "upNext",
   initialState,
   reducers: {
-    
-    setSort: (state, action) => {
-      state.sort = action.payload;
+    setMovies: (state, action) => {
+      state.movies = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
     },
   },
 });
 
-export const { setSort } = upNextSlice.actions;
+export const { setMovies, setLoading } = upNextSlice.actions;
 export default upNextSlice.reducer;

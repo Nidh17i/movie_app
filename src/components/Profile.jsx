@@ -1,17 +1,25 @@
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../AuthSlice";
 import {  useNavigate } from "react-router-dom";
-import {removeFavorite,removetoWatchList} from '../features/favMovie/favSlice'
+import {removeFavorite,removetoWatchList,loadUserFavData,clearFavState} from '../features/favMovie/favSlice'
+import { useEffect } from "react";
 
 export default function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { Favorite, WatchList } = useSelector((state) => state.favmovies);
-  //console.log("fav mvoie", Favorite);
+ 
 
   const { userData } = useSelector((state) => state.MovieUser);
+  
+useEffect(() => {
+    if (userData?.name) {
+      dispatch(loadUserFavData(userData.name));
+    }
+  }, [userData, dispatch]);
 
   const handleLogout = () => {
+    dispatch(clearFavState()); 
     dispatch(logoutUser());
     navigate("/login");
   };
@@ -53,7 +61,7 @@ export default function Profile() {
                 <div className="p-2 flex justify-between items-center">
                   <p className="text-sm font-medium">{movie.title}</p>
                   <button
-                    onClick={() => dispatch(removeFavorite(movie.id))}
+                    onClick={() => dispatch(removeFavorite({ id: movie.id, userKey: userData.namel }))}
                     className="text-red-500 hover:text-red-400"
                   >
                     Remove
@@ -88,7 +96,7 @@ export default function Profile() {
                 <div className="p-2 flex justify-between items-center">
                   <p className="text-sm font-medium">{movie.title}</p>
                   <button
-                    onClick={() => dispatch(removetoWatchList(movie.id))}
+                    onClick={() =>  dispatch(removetoWatchList({ id: movie.id, userKey: userData.email }))}
                     className="text-red-500 hover:text-red-400"
                   >
                     Remove
