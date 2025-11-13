@@ -4,21 +4,28 @@ import { useParams } from "react-router-dom";
 import {
   addFavorite,
   addtoWatchList,
+  removeFavorite,
+  removetoWatchList
 
 } from "../favMovie/favSlice";
 
 const MovieDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { isfav,iswatch } = useSelector((state) => state.favmovies);
- // console.log(iswatch )
- 
+  const { Favorite, WatchList } = useSelector((state) => state.favmovies)
  
   const { userData } = useSelector((state) => state.MovieUser);
-  //console.log(userData);
+  
 
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  
+  const userKey = userData.name;
+  const isFav = Favorite.some((m) => m.id === Number(id));
+  const isWatch = WatchList.some((m) => m.id === Number(id));
+  
+
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -53,7 +60,7 @@ const MovieDetails = () => {
   if (!movie)
     return <p className="text-center text-gray-400 mt-10">Movie not found.</p>;
 
-  return (
+ return (
     <div className="w-full min-h-screen bg-[#0f0f0f] text-white p-6 sm:p-12">
       <div className="flex flex-col md:flex-row gap-10">
         <div className="md:w-1/3">
@@ -72,52 +79,60 @@ const MovieDetails = () => {
           <h1 className="text-4xl font-bold mb-6">{movie.title}</h1>
 
           <div className="flex flex-wrap gap-4 mb-6">
-            <div className="border border-white text-white rounded-lg p-4 flex-1 min-w-[120px] text-center">
+            <div className="border border-white rounded-lg p-4 flex-1 text-center">
               <p className="font-semibold">Rating</p>
               <p>{movie.vote_average?.toFixed(1) || "N/A"}</p>
             </div>
-
-            <div className="border border-white text-white rounded-lg p-4 flex-1 min-w-[120px] text-center">
-              <p className="font-semibold">Release Date</p>
+            <div className="border border-white rounded-lg p-4 flex-1 text-center">
+              <p className="font-semibold">Release</p>
               <p>{movie.release_date || "Unknown"}</p>
             </div>
-
-            <div className="border border-white text-white rounded-lg p-4 flex-1 min-w-[120px] text-center">
+            <div className="border border-white rounded-lg p-4 flex-1 text-center">
               <p className="font-semibold">Genres</p>
               <p>{movie.genres?.map((g) => g.name).join(", ") || "N/A"}</p>
             </div>
           </div>
 
-          <p className="text-gray-300 leading-relaxed mb-6">
-            {movie.overview || "No description available."}
-          </p>
+          <p className="text-gray-300 mb-6">{movie.overview}</p>
 
           <div className="flex gap-4 flex-wrap mt-4">
-         {!isfav ?(<button
-              onClick={() => {
-                dispatch(addFavorite({ movie, userKey: userData.name }));
-              }}
-              className="px-6 py-2 rounded-lg font-medium border border-green-400 text-green-300 hover:bg-green-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-green-500/50"
-            >
-              Add to Favorite
-            </button>):(<h5
-            className="px-6 py-2 rounded-lg font-medium border border-green-400 text-green-300 hover:bg-green-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-green-500/50"
-            >added</h5>) }
-            
-            
-            {!iswatch ? (<button
-              onClick={() => {
-                dispatch(addtoWatchList({ movie, userKey: userData.name }));
-              }}
-              className="px-6 py-2 rounded-lg font-medium border border-blue-400 text-blue-300 hover:bg-blue-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-blue-500/50"
-            >
-              Add to Watchlist
-            </button>):(
-              <h5
-            className="px-6 py-2 rounded-lg font-medium border border-blue-400 text-blue-300 hover:bg-blue-400 hover:text-black active:scale-95 transition-all duration-300 shadow-md hover:shadow-blue-500/50"
-            >watchNow</h5>
+            {/* ✅ Favorite Toggle */}
+            {isFav ? (
+              <button
+                onClick={() =>
+                  dispatch(removeFavorite({ id: movie.id, userKey }))
+                }
+                className="px-6 py-2 rounded-lg border border-red-400 text-red-300 hover:bg-red-400 hover:text-black transition-all duration-300"
+              >
+                Remove Favorite
+              </button>
+            ) : (
+              <button
+                onClick={() => dispatch(addFavorite({ movie, userKey }))}
+                className="px-6 py-2 rounded-lg border border-green-400 text-green-300 hover:bg-green-400 hover:text-black transition-all duration-300"
+              >
+                Add to Favorite
+              </button>
             )}
-            
+
+            {/* ✅ Watchlist Toggle */}
+            {isWatch ? (
+              <button
+                onClick={() =>
+                  dispatch(removetoWatchList({ id: movie.id, userKey }))
+                }
+                className="px-6 py-2 rounded-lg border border-red-400 text-red-300 hover:bg-red-400 hover:text-black transition-all duration-300"
+              >
+                Remove Watchlist
+              </button>
+            ) : (
+              <button
+                onClick={() => dispatch(addtoWatchList({ movie, userKey }))}
+                className="px-6 py-2 rounded-lg border border-blue-400 text-blue-300 hover:bg-blue-400 hover:text-black transition-all duration-300"
+              >
+                Add to Watchlist
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -126,3 +141,4 @@ const MovieDetails = () => {
 };
 
 export default MovieDetails;
+

@@ -6,6 +6,7 @@ export default function HomePage() {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   
+  
   const [loading, setLoading] = useState(false);
 
    const[serchMovie,setSerchMovie]=useState('');

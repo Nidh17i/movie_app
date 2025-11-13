@@ -14,10 +14,22 @@ import { UpNext } from "./features/upNext/UpNext";
 import MovieDetails from "./features/favMovie/MovieDetails";
 import Profile from "./components/Profile";
 import HomePage from "./pages/PHome";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <BrowserRouter >
+     <Toaster position="top-right"
+     toastOptions={{
+          duration: 2000,
+          style: {
+            background: "#333",
+            color: "#fff",
+            borderRadius: "8px",
+            padding: "10px 16px",
+          },
+        }}
+      />
       <Example />
 
       <Routes>

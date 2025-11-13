@@ -2,13 +2,13 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import {setSearch,setGenre,setRating,setSort,} from "../discover/DiscoverSlice";
+import {setGenre,setRating,setSort,} from "../discover/DiscoverSlice";
+
 
 export const DiscoverMovies = () => {
   const dispatch = useDispatch();
-  const { search, genre, rating, sort } = useSelector(
-    (state) => state.discover
-  );
+  const {  genre, rating, sort } = useSelector( (state) => state.discover );
+  
 
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -33,40 +33,38 @@ export const DiscoverMovies = () => {
       .catch((err) => console.error(err));
   }, []);
 
+
   useEffect(() => {
     fetchMovies();
-  }, [search, genre, rating, sort]);
+  }, []);
 
-  const fetchMovies = async () => {
+ const fetchMovies = async () => {
     setLoading(true);
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY",
-      },
-    };
+    try {
+      let url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&language=en-US&page=1`;
 
-    let url = "";
-
-    
-      url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1`;
       if (genre) url += `&with_genres=${genre}`;
       if (rating) url += `&vote_average.gte=${rating}`;
       if (sort) url += `&sort_by=${sort}`;
-   
+      else url += `&sort_by=popularity.desc`; // default sort
 
-    try {
-      const res = await fetch(url, options);
+      const res = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NDlhNmQ3OGNiMGNmZTgxZTA3OTE0MTZjZWQxOTY1YiIsIm5iZiI6MTc2MjQyNTk4NC41MTUsInN1YiI6IjY5MGM3YzgwZTY3MTk4Y2FkMzkzNTE1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IkXcOULuD1zQTn8sUeXkZejhNYTa4UduorAMtGen_uY",
+        },
+      });
       const data = await res.json();
       setMovies(data.results || []);
-    } catch (error) {
-      console.error("Movie fetch error:", error);
+    } catch (err) {
+      console.error("Movie fetch error:", err);
     } finally {
       setLoading(false);
     }
   };
+ 
+
 
   return (
     <div className="w-full bg-[#0f0f0f] text-white px-12 py-10">
@@ -128,6 +126,12 @@ export const DiscoverMovies = () => {
             <option value="release_date.asc">Oldest</option>
           </select>
         </div>
+         <button
+          onClick={fetchMovies}
+          className="bg-yellow-500 text-black px-5 py-2 rounded-lg hover:bg-yellow-400 font-semibold"
+        >
+          Search
+        </button>
       </div>
 
       {loading ? (
